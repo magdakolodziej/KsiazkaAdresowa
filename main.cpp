@@ -151,7 +151,6 @@ void wyswietlNazwisko(vector <Adresat> adresaci) {
 void zapisPoZmianach(vector <Adresat>& adresaci) {
 
     fstream ksiazkaPoZmianach;
-    vector <Adresat>::iterator it = adresaci.begin();
 
     ksiazkaPoZmianach.open("ksiazka.txt", ios::out | ios :: trunc);
 
