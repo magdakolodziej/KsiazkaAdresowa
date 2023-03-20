@@ -22,7 +22,7 @@ string wczytajLinie() {
     getline(cin,nazwa);
     return nazwa;
 }
-void wczytajUzytkownikowZPliku( vector <Uzytkownik>&uzytkonicy) {
+void wczytajUzytkownikowZPliku( vector <Uzytkownik> &uzytkonicy) {
     Uzytkownik nowyUzytkownik;
     string linia;
     int nrLini = 1;
@@ -50,18 +50,30 @@ void wczytajUzytkownikowZPliku( vector <Uzytkownik>&uzytkonicy) {
     }
     listaUzytkownikow.close();
 }
-void rejestracjaUzytkownika( vector <Uzytkownik>&uzytkowincy){
-Uzytkownik nowyUzytkownik;
+void rejestracjaUzytkownika( vector <Uzytkownik> &uzytkowincy) {
 
-nowyUzytkownik.id = uzytkowincy.empty() ? 1 : uzytkowincy.back().id + 1;
-cout << "Podaj nazwe uzytkownika: ";
-nowyUzytkownik.nazwa = wczytajLinie();
-cout << "Podaj haslo: ";
-nowyUzytkownik.haslo = wczytajLinie();
+    Uzytkownik nowyUzytkownik;
 
-uzytkowincy.push_back(nowyUzytkownik);
+    nowyUzytkownik.id = uzytkowincy.empty() ? 1 : uzytkowincy.back().id + 1;
 
-fstream listaUzytkownikow;
+    cout << "Podaj nazwe uzytkownika: ";
+    nowyUzytkownik.nazwa = wczytajLinie();
+    int i = 0;
+    while (i < uzytkowincy.size()) {
+        if (uzytkowincy[i].nazwa == nowyUzytkownik.nazwa) {
+            cout << endl <<"Taki uzytkownik istnieje. Wpisz inna nazwe uzytkownika: ";
+            nowyUzytkownik.nazwa = wczytajLinie();
+            i = 0;
+        } else {
+            i++;
+        }
+    }
+    cout << "Podaj haslo: ";
+    nowyUzytkownik.haslo = wczytajLinie();
+
+    uzytkowincy.push_back(nowyUzytkownik);
+
+    fstream listaUzytkownikow;
     listaUzytkownikow.open("Uzytkownicy.txt", ios::out | ios::app);
 
     if (listaUzytkownikow.good()) {
@@ -71,6 +83,40 @@ fstream listaUzytkownikow;
     } else cout << "Nie udalo sie otworzycpliku i zapisac do niego danych" << endl;
     system("pause");
 
+}
+
+int logowanie (vector <Uzytkownik> &uzytkownicy) {
+
+    string nazwaUzytkownika, haslo;
+    int idZalogowanegoUzytkownika;
+
+    if (uzytkownicy.size() > 0) {
+        cout << "Podaj nazwe uzytkownika:";
+        nazwaUzytkownika = wczytajLinie();
+        for(int i = 0; i < uzytkownicy.size(); i++) {
+            if (nazwaUzytkownika == uzytkownicy[i].nazwa) {
+                cout << "Podaj haslo:";
+                cin >> haslo;
+                if ( haslo == uzytkownicy[i].haslo) {
+                    cout << "Logowanie poprawne" << endl;
+                    system("pause");
+                    return uzytkownicy[i].id;
+                } else
+                    cout << "Bledne haslo. Sprobuj od poczatku" << endl;
+                system("pause");
+                return 0;
+            } else {
+                cout << "Brak uzytkownika z taka nawza. Sprobuj ponownie" << endl;
+                system("pause");
+                return 0;
+            }
+        }
+    }
+    else{
+        cout << "Brak zarejestrowanych uzytkownikow. Dodaj uzytkownika" << endl;
+        system("pause");
+        return 0;
+    }
 }
 void wczytajAdresatowZPliku(vector <Adresat>&adresaci) {
     Adresat nowyAdresat;
@@ -320,7 +366,7 @@ int main() {
                 rejestracjaUzytkownika(uzytkownicy);
                 break;
             case '2':
-                //idZalogowanegoUzytkownika = logowanie(uzytkownicy);
+                idZalogowanegoUzytkownika = logowanie(uzytkownicy);
                 break;
             case '9':
                 exit(0);
@@ -330,50 +376,50 @@ int main() {
             }
         }
 
-    else{
-    wczytajAdresatowZPliku(adresaci);
-        system("cls");
-        cout << " >>>KSIAZKA ADRESOWA<<<" << endl;
-        cout << "1. Dodaj adresata" << endl;
-        cout << "2. Wyszukaj po imieniu" << endl;
-        cout << "3. Wyszukaj po nazwisku" << endl;
-        cout << "4. Wyswietl wszystkich adresatow" << endl;
-        cout << "5. Eytuj wybranego adresata" << endl;
-        cout << "6. Usun wybranego adresata" << endl;
-        cout << "7. Zmien haslo" << endl;
-        cout << "8. Wyloguj sie" << endl;
-        cin >> wybor;
+        else {
+            wczytajAdresatowZPliku(adresaci);
+            system("cls");
+            cout << " >>>KSIAZKA ADRESOWA<<<" << endl;
+            cout << "1. Dodaj adresata" << endl;
+            cout << "2. Wyszukaj po imieniu" << endl;
+            cout << "3. Wyszukaj po nazwisku" << endl;
+            cout << "4. Wyswietl wszystkich adresatow" << endl;
+            cout << "5. Eytuj wybranego adresata" << endl;
+            cout << "6. Usun wybranego adresata" << endl;
+            cout << "7. Zmien haslo" << endl;
+            cout << "8. Wyloguj sie" << endl;
+            cin >> wybor;
 
-        switch(wybor) {
-        case '1':
-            dodawanieAdresata(adresaci);
-            break;
-        case '2':
-            wyswietlImie(adresaci);
-                    break;
-                case '3':
-                    wyswietlNazwisko(adresaci);
-                    break;
-                case '4':
-                    wyswietlanieWszystkich(adresaci);
-                    break;
-                case '5':
-                    edycjaAdresata(adresaci);
-                    break;
-                case '6':
-                    usunAdresata(adresaci);
-                    break;
-                case '7':
-                    //zmienHaslo(uzytkownicy);
-                    break;
-                case '8':
-                    idZalogowanegoUzytkownika = 0;
-                    break;
-        default:
-            cout << "Nie ma takiej opcji" << endl;
-            Sleep(3000);
+            switch(wybor) {
+            case '1':
+                dodawanieAdresata(adresaci);
+                break;
+            case '2':
+                wyswietlImie(adresaci);
+                break;
+            case '3':
+                wyswietlNazwisko(adresaci);
+                break;
+            case '4':
+                wyswietlanieWszystkich(adresaci);
+                break;
+            case '5':
+                edycjaAdresata(adresaci);
+                break;
+            case '6':
+                usunAdresata(adresaci);
+                break;
+            case '7':
+                //zmienHaslo(uzytkownicy);
+                break;
+            case '8':
+                idZalogowanegoUzytkownika = 0;
+                break;
+            default:
+                cout << "Nie ma takiej opcji" << endl;
+                Sleep(3000);
+            }
         }
-    }
     }
     return 0;
 }
