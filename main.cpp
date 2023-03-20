@@ -50,6 +50,28 @@ void wczytajUzytkownikowZPliku( vector <Uzytkownik>&uzytkonicy) {
     }
     listaUzytkownikow.close();
 }
+void rejestracjaUzytkownika( vector <Uzytkownik>&uzytkowincy){
+Uzytkownik nowyUzytkownik;
+
+nowyUzytkownik.id = uzytkowincy.empty() ? 1 : uzytkowincy.back().id + 1;
+cout << "Podaj nazwe uzytkownika: ";
+nowyUzytkownik.nazwa = wczytajLinie();
+cout << "Podaj haslo: ";
+nowyUzytkownik.haslo = wczytajLinie();
+
+uzytkowincy.push_back(nowyUzytkownik);
+
+fstream listaUzytkownikow;
+    listaUzytkownikow.open("Uzytkownicy.txt", ios::out | ios::app);
+
+    if (listaUzytkownikow.good()) {
+        listaUzytkownikow << nowyUzytkownik.id  << "|" << nowyUzytkownik.nazwa << "|" << nowyUzytkownik.haslo << "|" << endl;
+        cout << "Nowy uzytkownik dodany" << endl;
+        listaUzytkownikow.close();
+    } else cout << "Nie udalo sie otworzycpliku i zapisac do niego danych" << endl;
+    system("pause");
+
+}
 void wczytajAdresatowZPliku(vector <Adresat>&adresaci) {
     Adresat nowyAdresat;
     string linia;
@@ -91,8 +113,9 @@ void wczytajAdresatowZPliku(vector <Adresat>&adresaci) {
 void dodawanieAdresata (vector <Adresat>&adresaci) {
 
     Adresat nowyAdresat;
-    int ostatniAdresat = adresaci.size() - 1;
+    int ostatniAdresat;
 
+    nowyAdresat.id = adresaci.empty() ? 1 : adresaci.back().id + 1;
     cout << "Podaj imie: ";
     nowyAdresat.imie = wczytajLinie();
     cout << "Podaj nazwisko: ";
@@ -103,7 +126,6 @@ void dodawanieAdresata (vector <Adresat>&adresaci) {
     nowyAdresat.email = wczytajLinie();
     cout << "Podaj adres: ";
     nowyAdresat.adres = wczytajLinie();
-    nowyAdresat.id = adresaci[ostatniAdresat].id + 1;
 
     adresaci.push_back(nowyAdresat);
 
@@ -277,7 +299,7 @@ void usunAdresata(vector <Adresat>& adresaci) {
 
 
 int main() {
-    vector <Uztkownik> uzytkownicy;
+    vector <Uzytkownik> uzytkownicy;
     vector <Adresat> adresaci;
     int idZalogowanegoUzytkownika = 0;
     wczytajUzytkownikowZPliku(uzytkownicy);
@@ -286,18 +308,19 @@ int main() {
     while(1) {
         if (idZalogowanegoUzytkownika == 0) {
             system("cls");
+            cout << " >>>MENU<<<" << endl;
             cout << "1. Rejestracja" << endl;
             cout << "2. Logowanie" << endl;
             cout << "9. Zakoncz program" << endl;
 
-            cin >> wybor;
+            cin >> wybor1;
 
             switch(wybor1) {
             case '1':
                 rejestracjaUzytkownika(uzytkownicy);
                 break;
             case '2':
-                idZalogowanegoUzytkownika = logowanie(uzytkownicy);
+                //idZalogowanegoUzytkownika = logowanie(uzytkownicy);
                 break;
             case '9':
                 exit(0);
@@ -308,8 +331,7 @@ int main() {
         }
 
     else{
-wczytajAdresatowZPliku(adresaci);
-    while(1) {
+    wczytajAdresatowZPliku(adresaci);
         system("cls");
         cout << " >>>KSIAZKA ADRESOWA<<<" << endl;
         cout << "1. Dodaj adresata" << endl;
@@ -342,10 +364,10 @@ wczytajAdresatowZPliku(adresaci);
                     usunAdresata(adresaci);
                     break;
                 case '7':
-                    zmienHaslo(uzytkownicy);
+                    //zmienHaslo(uzytkownicy);
                     break;
                 case '8':
-                    exit(0);
+                    idZalogowanegoUzytkownika = 0;
                     break;
         default:
             cout << "Nie ma takiej opcji" << endl;
