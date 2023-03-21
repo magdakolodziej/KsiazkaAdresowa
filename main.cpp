@@ -13,7 +13,7 @@ struct Uzytkownik {
 };
 
 struct Adresat {
-    int id;
+    int id, idUzytkownika;
     string imie, nazwisko, nrTel, email, adres;
 };
 string wczytajLinie() {
@@ -39,15 +39,18 @@ void wczytajUzytkownikowZPliku( vector <Uzytkownik> &uzytkonicy) {
         koniec = linia.find("|",poczatek);
         id = linia.substr(poczatek, koniec - poczatek);
         nowyUzytkownik.id = atoi(id.c_str());
+        cout << nowyUzytkownik.id <<endl;
         poczatek = koniec;
         koniec = linia.find("|", poczatek+1);
         nowyUzytkownik.nazwa = linia.substr(poczatek +1, koniec - poczatek - 1);
+        cout << nowyUzytkownik.nazwa << endl;
         poczatek = koniec;
         koniec = linia.find("|", poczatek+1);
         nowyUzytkownik.haslo = linia.substr(poczatek +1, koniec - poczatek - 1);
         uzytkonicy.push_back(nowyUzytkownik);
         nrLini ++;
     }
+    system("pause");
     listaUzytkownikow.close();
 }
 void rejestracjaUzytkownika( vector <Uzytkownik> &uzytkowincy) {
@@ -94,6 +97,7 @@ int logowanie (vector <Uzytkownik> &uzytkownicy) {
         cout << "Podaj nazwe uzytkownika:";
         nazwaUzytkownika = wczytajLinie();
         for(int i = 0; i < uzytkownicy.size(); i++) {
+                cout << uzytkownicy[i].nazwa << endl;
             if (nazwaUzytkownika == uzytkownicy[i].nazwa) {
                 cout << "Podaj haslo:";
                 cin >> haslo;
@@ -105,12 +109,11 @@ int logowanie (vector <Uzytkownik> &uzytkownicy) {
                     cout << "Bledne haslo. Sprobuj od poczatku" << endl;
                 system("pause");
                 return 0;
-            } else {
+            }
+        }
                 cout << "Brak uzytkownika z taka nawza. Sprobuj ponownie" << endl;
                 system("pause");
                 return 0;
-            }
-        }
     }
     else{
         cout << "Brak zarejestrowanych uzytkownikow. Dodaj uzytkownika" << endl;
@@ -118,13 +121,13 @@ int logowanie (vector <Uzytkownik> &uzytkownicy) {
         return 0;
     }
 }
-void wczytajAdresatowZPliku(vector <Adresat>&adresaci) {
+void wczytajAdresatowZPliku(vector <Adresat>& adresaci) {
     Adresat nowyAdresat;
     string linia;
     int nrLinii = 1;
     fstream ksiazka;
     int poczatek, koniec;
-    string id;
+    string id, idUzytkownika;
 
     ksiazka.open("Adresaci.txt", ios::in);
 
@@ -133,7 +136,11 @@ void wczytajAdresatowZPliku(vector <Adresat>&adresaci) {
     while(getline(ksiazka, linia)) {
         poczatek = 0;
         koniec = linia.find("|", poczatek);
-        id = linia.substr(poczatek, koniec - poczatek);
+        idUzytkownika = linia.substr(poczatek, koniec - poczatek);
+        nowyAdresat.idUzytkownika = atoi(id.c_str());
+        poczatek = koniec;
+        koniec = linia.find("|", poczatek+1);
+        id = linia.substr(poczatek + 1, koniec - poczatek - 1);
         nowyAdresat.id = atoi(id.c_str());
         poczatek = koniec;
         koniec = linia.find("|", poczatek+1);
@@ -156,11 +163,11 @@ void wczytajAdresatowZPliku(vector <Adresat>&adresaci) {
     ksiazka.close();
 }
 
-void dodawanieAdresata (vector <Adresat>&adresaci) {
+void dodawanieAdresata (vector <Adresat>&adresaci, int idZalogowanegoUzytkownika) {
 
     Adresat nowyAdresat;
     int ostatniAdresat;
-
+    nowyAdresat.idUzytkownika = idZalogowanegoUzytkownika;
     nowyAdresat.id = adresaci.empty() ? 1 : adresaci.back().id + 1;
     cout << "Podaj imie: ";
     nowyAdresat.imie = wczytajLinie();
@@ -179,7 +186,7 @@ void dodawanieAdresata (vector <Adresat>&adresaci) {
     ksiazka.open("Adresaci.txt", ios::out | ios::app);
 
     if (ksiazka.good()) {
-        ksiazka << nowyAdresat.id  << "|" << nowyAdresat.imie << "|" << nowyAdresat.nazwisko << "|" << nowyAdresat.nrTel << "|" << nowyAdresat.email << "|" << nowyAdresat.adres << "|" << endl;
+        ksiazka << nowyAdresat.idUzytkownika << "|" <<nowyAdresat.id  << "|" << nowyAdresat.imie << "|" << nowyAdresat.nazwisko << "|" << nowyAdresat.nrTel << "|" << nowyAdresat.email << "|" << nowyAdresat.adres << "|" << endl;
         cout << "Nowy adresat dodany" << endl;
         ksiazka.close();
     } else cout << "Nie udalo sie otworzycpliku i zapisac do niego danych" << endl;
@@ -388,26 +395,27 @@ int main() {
             cout << "6. Usun wybranego adresata" << endl;
             cout << "7. Zmien haslo" << endl;
             cout << "8. Wyloguj sie" << endl;
+            cout << "9. Zakoncz program" << endl;
             cin >> wybor;
 
             switch(wybor) {
             case '1':
-                dodawanieAdresata(adresaci);
+                dodawanieAdresata(adresaci, idZalogowanegoUzytkownika);
                 break;
             case '2':
-                wyswietlImie(adresaci);
+                //wyswietlImie(adresaci, idZalogowanegoUzytkownika);
                 break;
             case '3':
-                wyswietlNazwisko(adresaci);
+                //wyswietlNazwisko(adresaci, idZalogowanegoUzytkownika);
                 break;
             case '4':
-                wyswietlanieWszystkich(adresaci);
+                //wyswietlanieWszystkich(adresaci, idZalogowanegoUzytkownika);
                 break;
             case '5':
-                edycjaAdresata(adresaci);
+                //edycjaAdresata(adresaci, idZalogowanegoUzytkownika);
                 break;
             case '6':
-                usunAdresata(adresaci);
+                //usunAdresata(adresaci, idZalogowanegoUzytkownika);
                 break;
             case '7':
                 //zmienHaslo(uzytkownicy);
@@ -415,6 +423,8 @@ int main() {
             case '8':
                 idZalogowanegoUzytkownika = 0;
                 break;
+            case '9':
+                exit(0);
             default:
                 cout << "Nie ma takiej opcji" << endl;
                 Sleep(3000);
