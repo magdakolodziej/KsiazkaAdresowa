@@ -55,7 +55,6 @@ void rejestracjaUzytkownika( vector <Uzytkownik> &uzytkowincy) {
     Uzytkownik nowyUzytkownik;
 
     nowyUzytkownik.id = uzytkowincy.empty() ? 1 : uzytkowincy.back().id + 1;
-
     cout << "Podaj nazwe uzytkownika: ";
     nowyUzytkownik.nazwa = wczytajLinie();
     int i = 0;
@@ -269,7 +268,7 @@ void zapisPoZmianach(vector <Adresat>& adresaci) {
 
     if (ksiazkaPoZmianach.good()) {
         for (int i = 0; i < adresaci.size(); i++) {
-            ksiazkaPoZmianach << adresaci[i].id  << "|" << adresaci[i].imie << "|" << adresaci[i].nazwisko << "|" << adresaci[i].nrTel << "|" << adresaci[i].email << "|" << adresaci[i].adres << "|" << endl;
+            ksiazkaPoZmianach << adresaci[i].id  << "|" << adresaci[i].idUzytkownika << "|" << adresaci[i].imie << "|" << adresaci[i].nazwisko << "|" << adresaci[i].nrTel << "|" << adresaci[i].email << "|" << adresaci[i].adres << "|" << endl;
         }
     }
     ksiazkaPoZmianach.close();
@@ -418,10 +417,10 @@ int main() {
                 wyswietlanieWszystkich(adresaci, idZalogowanegoUzytkownika);
                 break;
             case '5':
-                //edycjaAdresata(adresaci, idZalogowanegoUzytkownika);
+                edycjaAdresata(adresaci);
                 break;
             case '6':
-                //usunAdresata(adresaci, idZalogowanegoUzytkownika);
+                usunAdresata(adresaci);
                 break;
             case '7':
                 //zmienHaslo(uzytkownicy);
