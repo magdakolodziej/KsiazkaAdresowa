@@ -83,7 +83,19 @@ void rejestracjaUzytkownika( vector <Uzytkownik> &uzytkowincy) {
     system("pause");
 
 }
+void zapisPoZmianieHasla(vector <Uzytkownik> &uzytkownicy){
+fstream plik;
+vector <Uzytkownik>::iterator it = uzytkownicy.begin();
 
+plik.open("Uzytkownicy.txt" , ios::out | ios :: trunc);
+
+if (plik.good()) {
+    for (int i = 0; i < uzytkownicy.size(); i++){
+        plik << uzytkownicy[i].id << "|" << uzytkownicy[i].nazwa << "|" << uzytkownicy[i].haslo << "|" << endl;
+    }
+}
+plik.close();
+}
 int logowanie (vector <Uzytkownik> &uzytkownicy) {
 
     string nazwaUzytkownika, haslo;
@@ -115,8 +127,14 @@ int logowanie (vector <Uzytkownik> &uzytkownicy) {
         return 0;
     }
 }
-
-int wczytajAdresatowZPliku(vector <Adresat>& adresaci, int idZalogowanegoUzytkownika) {
+void zmienHaslo(vector <Uzytkownik> &uzytkownicy, int i){
+cout << "Podaj nowe haslo: ";
+uzytkownicy[i-1].haslo = wczytajLinie();
+zapisPoZmianieHasla(uzytkownicy);
+cout << "Haslo zostalo zmienione";
+system("pause");
+}
+int wczytajAdresatowZPliku(vector <Adresat> &adresaci, int idZalogowanegoUzytkownika) {
     Adresat nowyAdresat;
     string linia;
     int nrLinii = 1;
@@ -164,7 +182,7 @@ int wczytajAdresatowZPliku(vector <Adresat>& adresaci, int idZalogowanegoUzytkow
     return idOstatniego;
 }
 
-int dodawanieAdresata (vector <Adresat>&adresaci, int idZalogowanegoUzytkownika, int idOstatniego) {
+int dodawanieAdresata (vector <Adresat> &adresaci, int idZalogowanegoUzytkownika, int idOstatniego) {
 
     Adresat nowyAdresat;
     nowyAdresat.id = adresaci.empty() ? 1 : idOstatniego + 1;
@@ -194,7 +212,7 @@ int dodawanieAdresata (vector <Adresat>&adresaci, int idZalogowanegoUzytkownika,
     return idOstatniego ++;
 }
 
-void wyswietlanieWszystkich(vector <Adresat>&adresaci) {
+void wyswietlanieWszystkich(vector <Adresat> &adresaci) {
 
     if (adresaci.size() >0) {
         for(int i = 0; i < adresaci.size(); i++) {
@@ -453,7 +471,7 @@ int main() {
                 idOstatniegoAdresata = wczytajAdresatowZPliku(adresaci, idZalogowanegoUzytkownika);
                 break;
             case '7':
-                //zmienHaslo(uzytkownicy);
+                zmienHaslo(uzytkownicy, idZalogowanegoUzytkownika);
                 break;
             case '8':
                 idZalogowanegoUzytkownika = 0;
