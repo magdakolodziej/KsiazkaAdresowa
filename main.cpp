@@ -115,6 +115,7 @@ int logowanie (vector <Uzytkownik> &uzytkownicy) {
         return 0;
     }
 }
+
 int wczytajAdresatowZPliku(vector <Adresat>& adresaci, int idZalogowanegoUzytkownika) {
     Adresat nowyAdresat;
     string linia;
@@ -334,7 +335,29 @@ void edycjaAdresata(vector <Adresat>& adresaci) {
     if(sprawdzenie == 0) cout  << "Brak osoby o takim id w ksiazce adresowej. " << endl;
     system("pause");
 }
-/*void usunAdresata(vector <Adresat>& adresaci) {
+
+void zapisPoUsunieciu(vector <Adresat>& adresaci, int id) {
+
+    fstream ksiazkaPoZmianach, ksiazkaPrzedZmianami;
+    string linia;
+
+    ksiazkaPrzedZmianami.open("Adresaci.txt", ios::in);
+    ksiazkaPoZmianach.open("Adresaci_po_zmianach.txt", ios::out | ios :: trunc);
+
+     while(getline(ksiazkaPrzedZmianami, linia)){
+        if (atoi(linia.c_str()) != id){
+            ksiazkaPoZmianach << linia << endl;
+        }
+    }
+
+    ksiazkaPrzedZmianami.close();
+    ksiazkaPoZmianach.close();
+
+    remove("Adresaci.txt");
+    rename("Adresaci_po_zmianach.txt", "Adresaci.txt");
+
+}
+void usunAdresata(vector <Adresat>& adresaci) {
     int id;
     int sprawdzenie = 0;
     vector <Adresat>::iterator it;
@@ -352,14 +375,14 @@ void edycjaAdresata(vector <Adresat>& adresaci) {
             if(odpowiedz == "t") {
                 it = adresaci.begin() + i;
                 adresaci.erase(it);
-                zapisPoZmianach(adresaci);
+                zapisPoUsunieciu(adresaci,id);
             } else cout << "Adresat nie zostal usuniety";
         }
     }
     if(sprawdzenie == 0) cout << "Brak osoby o takim id w ksiazce adresowej.";
     system("pause");
 }
-*/
+
 
 int main() {
     vector <Uzytkownik> uzytkownicy;
@@ -426,7 +449,8 @@ int main() {
                 edycjaAdresata(adresaci);
                 break;
             case '6':
-               // usunAdresata(adresaci);
+                usunAdresata(adresaci);
+                idOstatniegoAdresata = wczytajAdresatowZPliku(adresaci, idZalogowanegoUzytkownika);
                 break;
             case '7':
                 //zmienHaslo(uzytkownicy);
