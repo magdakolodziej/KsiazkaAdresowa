@@ -16,12 +16,14 @@ struct Adresat {
     int id, idUzytkownika;
     string imie, nazwisko, nrTel, email, adres;
 };
+
 string wczytajLinie() {
     string nazwa = " ";
     cin.sync();
     getline(cin,nazwa);
     return nazwa;
 }
+
 void wczytajUzytkownikowZPliku( vector <Uzytkownik> &uzytkonicy) {
     Uzytkownik nowyUzytkownik;
     string linia;
@@ -50,6 +52,7 @@ void wczytajUzytkownikowZPliku( vector <Uzytkownik> &uzytkonicy) {
     }
     listaUzytkownikow.close();
 }
+
 void rejestracjaUzytkownika( vector <Uzytkownik> &uzytkowincy) {
 
     Uzytkownik nowyUzytkownik;
@@ -57,7 +60,7 @@ void rejestracjaUzytkownika( vector <Uzytkownik> &uzytkowincy) {
     nowyUzytkownik.id = uzytkowincy.empty() ? 1 : uzytkowincy.back().id + 1;
     cout << "Podaj nazwe uzytkownika: ";
     nowyUzytkownik.nazwa = wczytajLinie();
-    int i = 0;
+    size_t i = 0;
     while (i < uzytkowincy.size()) {
         if (uzytkowincy[i].nazwa == nowyUzytkownik.nazwa) {
             cout << endl <<"Taki uzytkownik istnieje. Wpisz inna nazwe uzytkownika: ";
@@ -83,28 +86,28 @@ void rejestracjaUzytkownika( vector <Uzytkownik> &uzytkowincy) {
     system("pause");
 
 }
+
 void zapisPoZmianieHasla(vector <Uzytkownik> &uzytkownicy) {
     fstream plik;
-    vector <Uzytkownik>::iterator it = uzytkownicy.begin();
 
     plik.open("Uzytkownicy.txt", ios::out | ios :: trunc);
 
     if (plik.good()) {
-        for (int i = 0; i < uzytkownicy.size(); i++) {
+        for (size_t i = 0; i < uzytkownicy.size(); i++) {
             plik << uzytkownicy[i].id << "|" << uzytkownicy[i].nazwa << "|" << uzytkownicy[i].haslo << "|" << endl;
         }
     }
     plik.close();
 }
+
 int logowanie (vector <Uzytkownik> &uzytkownicy) {
 
     string nazwaUzytkownika, haslo;
-    int idZalogowanegoUzytkownika;
 
     if (uzytkownicy.size() > 0) {
         cout << "Podaj nazwe uzytkownika:";
         nazwaUzytkownika = wczytajLinie();
-        for(int i = 0; i < uzytkownicy.size(); i++) {
+        for(size_t i = 0; i < uzytkownicy.size(); i++) {
             if (nazwaUzytkownika == uzytkownicy[i].nazwa) {
                 cout << "Podaj haslo:";
                 cin >> haslo;
@@ -127,6 +130,7 @@ int logowanie (vector <Uzytkownik> &uzytkownicy) {
         return 0;
     }
 }
+
 void zmienHaslo(vector <Uzytkownik> &uzytkownicy, int i) {
     cout << "Podaj nowe haslo: ";
     uzytkownicy[i-1].haslo = wczytajLinie();
@@ -134,6 +138,7 @@ void zmienHaslo(vector <Uzytkownik> &uzytkownicy, int i) {
     cout << "Haslo zostalo zmienione" << endl;
     system("pause");
 }
+
 int wczytajAdresatowZPliku(vector <Adresat> &adresaci, int idZalogowanegoUzytkownika) {
     Adresat nowyAdresat;
     string linia;
@@ -185,7 +190,7 @@ int wczytajAdresatowZPliku(vector <Adresat> &adresaci, int idZalogowanegoUzytkow
 int dodawanieAdresata (vector <Adresat> &adresaci, int idZalogowanegoUzytkownika, int idOstatniego) {
 
     Adresat nowyAdresat;
-    nowyAdresat.id = adresaci.empty() ? 1 : idOstatniego + 1;
+    nowyAdresat.id = idOstatniego + 1;
     nowyAdresat.idUzytkownika = idZalogowanegoUzytkownika;
     cout << "Podaj imie: ";
     nowyAdresat.imie = wczytajLinie();
@@ -209,13 +214,13 @@ int dodawanieAdresata (vector <Adresat> &adresaci, int idZalogowanegoUzytkownika
         ksiazka.close();
     } else cout << "Nie udalo sie otworzycpliku i zapisac do niego danych" << endl;
     system("pause");
-    return idOstatniego ++;
+    return ++idOstatniego;
 }
 
 void wyswietlanieWszystkich(vector <Adresat> &adresaci) {
 
     if (adresaci.size() >0) {
-        for(int i = 0; i < adresaci.size(); i++) {
+        for(size_t i = 0; i < adresaci.size(); i++) {
             cout << endl;
             cout << "ID: "             <<adresaci[i].id << endl;
             cout << "Imie: "           << adresaci[i].imie << endl;
@@ -231,7 +236,7 @@ void wyswietlanieWszystkich(vector <Adresat> &adresaci) {
 void wyswietlImie(vector <Adresat> adresaci) {
 
     int iloscWystapien = 0;
-    int i = 0;
+    size_t i = 0;
     string imie;
 
     if (adresaci.size() >0) {
@@ -257,7 +262,7 @@ void wyswietlImie(vector <Adresat> adresaci) {
 void wyswietlNazwisko(vector <Adresat> adresaci) {
     string nazwisko;
     int iloscWystapien = 0;
-    int i = 0;
+    size_t i = 0;
 
     if (adresaci.size() > 0) {
         cout << "Podaj nazwisko do wyswietlenia: ";
@@ -298,7 +303,6 @@ void zapisPoZmianach(vector <Adresat>& adresaci, int id, int i) {
 
     remove("Adresaci.txt");
     rename("Adresaci_po_zmianach.txt", "Adresaci.txt");
-
 }
 
 void edycjaAdresata(vector <Adresat>& adresaci) {
@@ -309,7 +313,7 @@ void edycjaAdresata(vector <Adresat>& adresaci) {
     cout << "Podaj ID adresata do edycji:";
     cin >> id;
 
-    for (int i = 0; i < adresaci.size(); i++) {
+    for (size_t i = 0; i < adresaci.size(); i++) {
         if (id == adresaci[i].id) {
             cout << "Jaka dana chcesz modyfikowac?" << endl;
             cout << "1. Imie" << endl;
@@ -375,6 +379,7 @@ void zapisPoUsunieciu(vector <Adresat>& adresaci, int id) {
     rename("Adresaci_po_zmianach.txt", "Adresaci.txt");
 
 }
+
 void usunAdresata(vector <Adresat>& adresaci) {
     int id;
     int sprawdzenie = 0;
@@ -385,7 +390,7 @@ void usunAdresata(vector <Adresat>& adresaci) {
     cout << "Podaj ID adresata do usuniecia:";
     cin >> id;
 
-    for (int i = 0; i < adresaci.size(); i++) {
+    for (size_t i = 0; i < adresaci.size(); i++) {
         if (id == adresaci[i].id) {
             sprawdzenie++;
             cout << "Wcisnij t aby potiwerdzic usuniecie adresata " << adresaci[i].imie << " " <<  adresaci[i].nazwisko << " : ";
